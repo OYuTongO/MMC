@@ -1,1 +1,3 @@
 # MMC
+
+copyright: xxyypnz
