@@ -115,14 +115,14 @@ def process_futures_data(data_folder, symbol=None, start_date=None, end_date=Non
         # 保存每个品种的数据到单独的文件
         for sym, data in processed_data_dict.items():
             if not data.empty:
-                output_file = os.path.join(output_folder, f"{sym}_futures_data.csv")
+                output_file = os.path.join(output_folder, f"{sym}_data.csv")
                 data.to_csv(output_file, index=False, encoding='utf-8-sig')
                 print(f"品种 {sym} 数据处理完成，共 {len(data)} 行，已保存到 {output_file}")
         
         # 如果需要，保存所有品种的合并数据
         if output_all and len(processed_data_dict) > 0:
             all_data = pd.concat(list(processed_data_dict.values()), ignore_index=True)
-            all_output_file = os.path.join(output_folder, "all_futures_data.csv")
+            all_output_file = os.path.join(output_folder, "all_data.csv")
             all_data.to_csv(all_output_file, index=False, encoding='utf-8-sig')
             print(f"所有品种数据处理完成，共 {len(all_data)} 行，已保存到 {all_output_file}")
     
