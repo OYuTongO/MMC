@@ -22,7 +22,7 @@ def read_gz_csv_files(data_folder, start_date=None, end_date=None):
         files_to_process = all_files
     
     # 读取并合并所有文件
-    dataframes = []
+    dataframes = [] 
     for file_path in files_to_process:
         file_date = os.path.basename(file_path).split('.')[0]
         print(f"读取文件: {file_path}")
