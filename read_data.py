@@ -29,7 +29,7 @@ def read_gz_csv_files(data_folder, start_date=None, end_date=None):
         
         df = pd.read_csv(file_path, compression='gzip')
         dataframes.append(df)
-        # 删除交换所信息
+        # 删除交换所信息 
         df = df.drop('exchange', axis=1, inplace=True)
     
     # 合并所有数据
