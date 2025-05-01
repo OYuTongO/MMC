@@ -131,13 +131,13 @@ def process_futures_data(data_folder, symbol=None, start_date=None, end_date=Non
 # 使用示例
 if __name__ == "__main__":
     # 处理单个品种的示例
-    hc_data_dict = process_futures_data(
-        "./cta_data/cta_data/data",
-        symbol="HC",
-        start_date="20170101",
-        end_date="20250418",
-        output_folder="./processed_data"
-    )
+    # hc_data_dict = process_futures_data(
+    #     "./cta_data/cta_data/data",
+    #     symbol="HC",
+    #     start_date="20170101",
+    #     end_date="20250418",
+    #     output_folder="./processed_data"
+    # )
     
     # 处理所有品种并分别保存的示例
     all_data_dict = process_futures_data(
