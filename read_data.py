@@ -27,10 +27,9 @@ def read_gz_csv_files(data_folder, start_date=None, end_date=None):
         file_date = os.path.basename(file_path).split('.')[0]
         print(f"读取文件: {file_path}")
         
-        # 直接读取压缩文件
         df = pd.read_csv(file_path, compression='gzip')
-        df['date'] = file_date  # 添加日期列
         dataframes.append(df)
+        df = df.drop('exchange', axis=1, inplace=True)
     
     # 合并所有数据
     if dataframes:
