@@ -1,0 +1,65 @@
+\documentclass[a4paper,12pt]{ctexart}
+\usepackage[utf8]{inputenc}
+\usepackage{xeCJK}  % 中文支持
+\usepackage{amsmath,amsthm,amssymb}  % 数学包
+\usepackage{titlesec} % 引入titlesec包来控制标题格式
+\usepackage{caption}
+\usepackage{graphicx}  % 插入图片
+\usepackage{booktabs}  % 美化表格
+
+\usepackage{hyperref}  % 超链接
+\usepackage{enumitem}  % 自定义列表
+\usepackage[left=3.5cm,right=3cm,top=2cm,bottom=2cm]{geometry}  % 页面设置
+\newtheorem{theorem}{定理}[section]
+
+\title{ 商品期货涨跌幅预测问题}
+\date{}
+\hypersetup{
+  hidelinks, % 隐藏链接框
+}
+% \captionsetup{labelformat=simple}
+\renewcommand{\figurename}{}
+\renewcommand{\tablename}{}
+% 使 section 标题居中
+\titleformat{\section}
+{\normalfont\Large\bfseries\centering} % 格式设置为居中
+{\thesection} % section 标题前的编号
+{1em} % 标题和编号之间的间距
+{} % 编号后面的格式
+
+\begin{document}
+
+\maketitle
+ 
+% \tableofcontents  % 自动生成目录
+
+ 
+\section{摘要}
+
+
+ 
+\section{问题重述}
+\subsection{问题背景}
+商品期货（如螺纹钢、铁矿石、焦炭、焦煤等）是金融市场中的重要交易品种，其价格
+波动受到多种因素的影响，包括供需关系、宏观经济政策、国际市场变化等。若能利用历
+史数据预测商品期货未来的涨跌幅，则可帮助投资者更好地进行交易决策。
+
+
+
+
+\subsection{问题描述}
+现有数据集为 1 分钟级数据，包括时间戳、开盘价、最高价、最低价、收盘价、成交
+量、持仓量等。请基于该数据集建立数学模型，预测商品期货未来 30 分钟的涨跌幅。涨跌
+幅定义为
+涨跌幅 = ${ \frac{Pt+30 - Pt}{Pt} * 100\% }$
+其中 $P_t$ 是当前时刻的价格，$P_{t+30}$ 是 30 分钟后的价格。。要求从 1 分钟级数据中提取出可
+能影响 30 分钟涨跌幅的特征，选择合适的机器学习模型对未来 30 分钟的涨跌幅进行预测。
+解释模型的选择理由，并使用适当的评价指标评估模型的性能，讨论模型的局限性及可能
+的改进方向。
+\section{数据预处理与特征提取}
+\section{模型选择}
+\section{模型训练与验证}
+\section{模型预测效果分析与改进方向}
+\section{源码与文档}
+
+\end{document}
