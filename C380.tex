@@ -6,6 +6,9 @@
 \usepackage{caption}
 \usepackage{graphicx}  % 插入图片
 \usepackage{booktabs}  % 美化表格
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{float}
 
 \usepackage{hyperref}  % 超链接
 \usepackage{enumitem}  % 自定义列表
@@ -26,6 +29,7 @@
 {\thesection} % section 标题前的编号
 {1em} % 标题和编号之间的间距
 {} % 编号后面的格式
+\pagestyle{plain}
 
 \begin{document}
 
@@ -64,14 +68,69 @@
 4.四分位数法检查close和volume数据中的异常值,出现异常采用线性插值法进行平滑处理
 
 最终得到仅包含datetime-close-volume的7个数据文件
-给出异常值处理前的close数值的概率密度函数示意图:
-/*7张*/
-给出异常值处理后的close随时间变化的数值k线图:
-/*7张*/
-给出异常值处理前后的volume对比图:
-/*7张*/
-
-
+\begin{enumerate}
+  \item 给出异常值处理前的volume和close的重叠k线图:此处篇幅原因暂时仅给出3张
+\FloatBarrier
+\noindent
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v0/HC.png}
+    \caption*{图2.2.1 异常值处理前HC的volume和close的重叠k线图}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v0/I.png}
+    \caption*{图2.2.2 异常值处理前I的volume和close的重叠k线图}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v0/JM.png}
+    \caption*{图2.2.2 异常值处理前JM的volume和close的重叠k线图}
+  \end{subfigure}
+  % 可以根据需要继续添加更多的子figure
+  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
+\end{figure}
+\newpage
+\item 给出异常值处理后的close随时间变化的数值k线图:\FloatBarrier\noindent\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v2/HC.png}
+    \caption*{图2.2.1 异常值处理后HC的close的k线图}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v2/I.png}
+    \caption*{图2.2.2 异常值处理后I的close的k线图}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v2/JM.png}
+    \caption*{图2.2.2 异常值处理后JM的close的k线图}
+  \end{subfigure}
+  % 可以根据需要继续添加更多的子figure
+  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
+\end{figure}
+\item 给出异常值处理后的volume对比图:\FloatBarrier\noindent\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v3/HC.png}
+    \caption*{图2.2.1 异常值处理后HC的v2异常后close的k线图}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v3/I.png}
+    \caption*{图2.2.2 异常值处理后I的v2异常后close的k线图}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics[width=\textwidth]{./v2/v3/JM.png}
+    \caption*{图2.2.2 异常值处理后JM的v2异常后close的k线图}
+  \end{subfigure}
+  % 可以根据需要继续添加更多的子figure
+  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
+\end{figure}
+\end{enumerate}
 提取特征包括 1.交易量随时间的变化率 2.交易量volume滞后30分钟和滞后1天的特征 3.交叉特征(波动率*交易量)
 
 
@@ -86,7 +145,7 @@
 /*可能需要解释代码大概是怎么写的*/
 
 \subsection{模型选择的理由及模型的具体实现}
-/*解释LSTM涉及的原理,时间序列的背景只是*/
+/*解释LSTM涉及的原理,时间序列的背景知识*/
 
 \subsection{模型训练和验证的过程及结果}
 /*结合训练测试验证过程中的真实数据进行描述,模型的特点和优势*/
