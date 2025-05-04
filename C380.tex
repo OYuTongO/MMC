@@ -332,65 +332,68 @@ LSTM模型具备以下优势,利于实现这个任务:
 
 4.输入输出为不定长序列\\
 
-LSTM模型的数学原理如下:
+LSTM模型的数学-金融学背景如下:
 
-\section*{LSTM模型与期货涨跌幅预测}
-\subsection*{门控机制的市场意义}
-LSTM的门控机制天然适合捕捉期货市场的三类关键特征：
-
-\begin{table}[h]
-\centering
-\caption{LSTM门控与市场特征的对应关系}
-\begin{tabular}{lll}
-\toprule
-门控类型 & 数学表达 & 市场功能 \\
-\midrule
-遗忘门 & $\mathbf{f}_t=\sigma(\mathbf{W}_f[\mathbf{h}_{t-1},\mathbf{x}_t])$ & 过滤过时的技术指标 \\
- & & 衰减历史波动率影响 \\
-输入门 & $\mathbf{i}_t=\sigma(\mathbf{W}_i[\mathbf{h}_{t-1},\mathbf{x}_t])$ & 识别突破性行情 \\
- & & 吸收突发新闻事件 \\
-输出门 & $\mathbf{o}_t=\sigma(\mathbf{W}_o[\mathbf{h}_{t-1},\mathbf{x}_t])$ & 控制预测信号强度 \\
- & & 调节风险暴露程度 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection*{期货特征工程}
-输入特征设计为5维向量：
-\begin{equation*}
-\mathbf{x}_t = \begin{bmatrix}
-\frac{p_t - p_{t-5}}{p_{t-5}} & \text{(5分钟收益率)} \\
-\frac{\text{std}(p_{t-30:t})}{\text{mean}(p_{t-30:t})} & \text{(波动率)} \\
-\log(v_t/\bar{v}_{t-60}) & \text{(成交量偏离)} \\
-oi_t - oi_{t-30} & \text{(持仓量变化)} \\
-\mathbb{I}_{\text{夜盘时段}} & \text{(交易时段标记)}
-\end{bmatrix}
-\end{equation*}
-
-\subsection*{梯度传播的市场解释}
-\begin{minipage}[t]{0.6\linewidth}
-\begin{equation*}
-\frac{\partial \mathcal{L}}{\partial \mathbf{C}_{t-1}} = \mathbf{f}_t + \frac{\partial}{\partial \mathbf{C}_{t-1}}(\mathbf{i}_t \odot \tilde{\mathbf{C}}_t)
-\end{equation*}
-\end{minipage}
-\begin{minipage}[t]{0.35\linewidth}
 \begin{itemize}
-\item 趋势市中$\mathbf{f}_t \approx 1$
-\item 震荡市中$\mathbf{i}_t$主导更新
-\item 极端行情时梯度爆炸抑制
-\end{itemize}
-\end{minipage}
+  \item[•] \textbf{门控机制的市场意义} \\
+  LSTM 的门控机制天然适合捕捉期货市场的三类关键特征：
 
-\subsection*{改进的Peephole结构}
-\begin{equation*}
-\begin{aligned}
-\mathbf{f}_t &= \sigma\left(\mathbf{W}_f[\mathbf{C}_{t-1}, \Delta p_{t-1}] + \mathbf{b}_f\right) \\
-\mathbf{o}_t &= \sigma\left(\mathbf{W}_o[\mathbf{C}_t, \text{VIX}_t] + \mathbf{b}_o\right)
-\end{aligned}
-\end{equation*}
-\begin{itemize}
-\item 价格加速度$\Delta p_{t-1}$增强趋势判断
-\item VIX指数调节风险控制强度
+  \begin{table}[h]
+  \centering
+  \caption{LSTM门控与市场特征的对应关系}
+  \begin{tabular}{lll}
+  \toprule
+  门控类型 & 数学表达 & 市场功能 \\
+  \midrule
+  遗忘门 & $\mathbf{f}_t=\sigma(\mathbf{W}_f[\mathbf{h}_{t-1},\mathbf{x}_t])$ & 过滤过时的技术指标 \\
+   & & 衰减历史波动率影响 \\
+  输入门 & $\mathbf{i}_t=\sigma(\mathbf{W}_i[\mathbf{h}_{t-1},\mathbf{x}_t])$ & 识别突破性行情 \\
+   & & 吸收突发新闻事件 \\
+  输出门 & $\mathbf{o}_t=\sigma(\mathbf{W}_o[\mathbf{h}_{t-1},\mathbf{x}_t])$ & 控制预测信号强度 \\
+   & & 调节风险暴露程度 \\
+  \bottomrule
+  \end{tabular}
+  \end{table}
+
+  \item[•] \textbf{期货特征工程} \\
+  输入特征设计为 5 维向量：
+  \begin{equation*}
+  \mathbf{x}_t = \begin{bmatrix}
+  \frac{p_t - p_{t-5}}{p_{t-5}} & \text{(5分钟收益率)} \\
+  \frac{\text{std}(p_{t-30:t})}{\text{mean}(p_{t-30:t})} & \text{(波动率)} \\
+  \log(v_t/\bar{v}_{t-60}) & \text{(成交量偏离)} \\
+  oi_t - oi_{t-30} & \text{(持仓量变化)} \\
+  \mathbb{I}_{\text{夜盘时段}} & \text{(交易时段标记)}
+  \end{bmatrix}
+  \end{equation*}
+
+  \item[•] \textbf{梯度传播的市场解释}
+  \begin{center}
+  \begin{minipage}[t]{0.6\linewidth}
+  \begin{equation*}
+  \frac{\partial \mathcal{L}}{\partial \mathbf{C}_{t-1}} = \mathbf{f}_t + \frac{\partial}{\partial \mathbf{C}_{t-1}}(\mathbf{i}_t \odot \tilde{\mathbf{C}}_t)
+  \end{equation*}
+  \end{minipage}
+  \begin{minipage}[t]{0.35\linewidth}
+  \begin{itemize}
+    \item 趋势市中 $\mathbf{f}_t \approx 1$
+    \item 震荡市中 $\mathbf{i}_t$ 主导更新
+    \item 极端行情时梯度爆炸抑制
+  \end{itemize}
+  \end{minipage}
+  \end{center}
+
+  \item[•] \textbf{改进的 Peephole 结构}
+  \begin{equation*}
+  \begin{aligned}
+  \mathbf{f}_t &= \sigma\left(\mathbf{W}_f[\mathbf{C}_{t-1}, \Delta p_{t-1}] + \mathbf{b}_f\right) \\
+  \mathbf{o}_t &= \sigma\left(\mathbf{W}_o[\mathbf{C}_t, \text{VIX}_t] + \mathbf{b}_o\right)
+  \end{aligned}
+  \end{equation*}
+  \begin{itemize}
+    \item 价格加速度 $\Delta p_{t-1}$ 增强趋势判断
+    \item VIX 指数调节风险控制强度
+  \end{itemize}
 \end{itemize}
 
 
@@ -604,27 +607,8 @@ oi_t - oi_{t-30} & \text{(持仓量变化)} \\
   \mathcal{L} = \underbrace{\frac{1}{N}\sum(y-\hat{y})^2}_{\text{MSE}} + \lambda \underbrace{\|\mathbf{W}\|_2^2}_{\text{L2}} + \alpha \underbrace{\|\mathbf{h}_t-\mathbf{h}_{t-1}\|_2^2}_{\text{状态平滑}}
   \]
 
-  \item \textbf{正则化设计}：采用多层次正则化策略提升模型鲁棒性，具体实现如下：
+  \item \textbf{过拟合处理}：
 
-  \begin{center}
-  \begin{table}[h]
-  \centering
-  \begin{tabular}{lll}
-  \toprule
-  \textbf{类型} & \textbf{实现方式} & \textbf{金融逻辑} \\
-  \midrule
-  L2权重衰减 & Adam优化器weight\_decay=0.01 & 抑制市场噪声导致的过拟合 \\
-  Dropout & LSTM1:0.3 → LSTM2:0.15 & 渐进式特征选择 \\
-  梯度裁剪 & $\|\nabla W\|_2 \leq 1.0$ & 防范极端行情梯度爆炸 \\
-  BatchNorm & 输入层标准化 & 统一量纲 \\
-  LayerNorm & 隐层状态归一化 & 稳定时序特征 \\
-  \bottomrule
-  \end{tabular}
-  \caption{正则化策略配置表}
-  \end{table}
-  \end{center}
-  
-  关键技术细节：
   \begin{itemize}
   \item \textbf{L2正则化}：
     \[
@@ -644,11 +628,15 @@ oi_t - oi_{t-30} & \text{(持仓量变化)} \\
     \]
     特别应对交割月合约的剧烈波动
   
-  \item \textbf{归一化处理}：
-    \begin{itemize}
-    \item 输入层：BatchNorm1d处理原始价格
-    \item 隐层：LayerNorm适应变长时间序列
-    \end{itemize}
+  
+  \item \textbf{早停机制}：
+  \begin{itemize}
+  \item 基于验证集MSE的patience=10策略
+    \item 保留最佳模型状态：选择验证集均方误差最小对应的参数 $\mathbf{W}_{\text{best}}$，即
+        \[
+        \mathbf{W}_{\text{best}} = \min_{\mathbf{W}} \text{MSE}_{\text{val}}(\mathbf{W})
+        \]
+  \end{itemize}
   \end{itemize}
   
   
@@ -687,14 +675,7 @@ oi_t - oi_{t-30} & \text{(持仓量变化)} \\
   \text{MAE} &= \frac{1}{N}\sum|y_i-\hat{y}_i| \quad \text{(衡量平均偏差)}
   \end{align*}
   
-  \item \textbf{早停机制}：
-  \begin{itemize}
-  \item 基于验证集MSE的patience=10策略
-    \item 保留最佳模型状态：选择验证集均方误差最小对应的参数 $\mathbf{W}_{\text{best}}$，即
-        \[
-        \mathbf{W}_{\text{best}} = \min_{\mathbf{W}} \text{MSE}_{\text{val}}(\mathbf{W})
-        \]
-  \end{itemize}
+
 \item \textbf{交叉验证}：时序分割(TimeSeriesSplit)保持时间依赖
 \end{itemize}
 
@@ -718,12 +699,59 @@ oi_t - oi_{t-30} & \text{(持仓量变化)} \\
   \item 异常输入自动检测与恢复
   \end{itemize}
 \end{itemize}
+\subsubsection{模型训练及验证结果}
+\FloatBarrier
+\noindent
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/HC_train.png}
+  \caption*{HC模型训练曲线}
+  % \label{fig:drone_formation}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/JM_train.png}
+  \caption*{JM模型训练曲线}
+  % \label{fig:drone_formation}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/RB_train.png}
+  \caption*{RB模型训练曲线}
+  % \label{fig:drone_formation}
+\end{figure}
 
-\newpage
+
+
+
 \subsection{模型预测效果与改进建议}
-
-\newpage
-
+\subsubsection{模型训练及验证结果}
+\FloatBarrier
+\noindent
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/HC_change.png}
+  \caption*{HC涨跌幅预测}
+  % \label{fig:drone_formation}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/SM_change.png}
+  \caption*{SM涨跌幅预测}
+  % \label{fig:drone_formation}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/SS_change.png}
+  \caption*{SS涨跌幅预测}
+  % \label{fig:drone_formation}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/RB_compare.png}
+  \caption*{RB收盘价预测与模型的对比}
+  % \label{fig:drone_formation}
+\end{figure}
 \section{源码与文档}
 
 \end{document}
