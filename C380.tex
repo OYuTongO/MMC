@@ -42,7 +42,7 @@
 
  
 \section{摘要}
-随着金融市场的全球化和信息技术的快速发展，商品期货价格涨跌幅预测对投资决策和风险管理具有重要意义。本文基于2017至2025多年商品期货的主力合约等数据，构建了基于长时间序列预测模型LSTM深度学习预测框架，为商品期货市场的投资决策提供支持
+随着金融市场的全球化和信息技术的快速发展，商品期货价格涨跌幅预测对投资决策和风险管理具有重要意义。本文基于2017至2025多年商品期货的主力合约等数据，构建了基于长时间序列预测模型LSTM深度学习预测框架，为商品期货市场的投资决策提供支持。
 
 对于数据预处理和特征提取，本文首先对各主力合约的收盘价，交易量进行可视化分析，为特征提取提供数据支持。随后，剔除诸如exchange等关于涨跌幅预测不相关的数据。接着，利用四分位数检测数据${close}$，${volume}$数据中的异常值，并采用线性插值处理。最后基于原始数据，通过相关性分析，提取与涨跌幅相关性强的以下3个特征：
 交易量随时间的变化率（${volume\_change\_rate}$）：交易量是市场活跃程度的重要指标，依据道氏理论和量价分析理论，价格变动若伴随交易量显著增长，则趋势更可能持续，交易量突增常伴随着主力资金的进出或情绪突变;
@@ -55,7 +55,10 @@
 
 对于模型实现，首先输入数据通过3个模块：${MinMaxScaler}$（归一化特征缩放器）将特征缩放至$[0,1]$区间，消除不同量纲的影响；${Cleaner}$（数据清洗器）处理缺失值和异常值；${TS Dataset}$（时序数据集构建器）通过滑动窗口法生成具有固定时间步长（30个时间点）的序列样本。网络架构由三个主要模块组成：${Inputer}$（输入处理模块），包含${BatchNorm1d}$层，提高训练稳定性；LSTM核心架构，采用双层设计（64-32隐藏单元），形成深层特征表示；${Outputer}$（输出处理模块），包含全连接层和激活函数，将LSTM提取的特征映射为未来30分钟的涨跌幅预测值。
 
-对于模型的预测效果，本文通过多种可视化方法展示了预测效果。首先，绘制了预测收盘价与实际收盘价的时间序列对比图，直观展示模型在不同市场阶段的预测准确性；接着计算预测的涨跌幅并做出可视化。最后，采用方向预测准确率（Direction Prediction Accuracy）及涨跌幅预测MAE对预测效果进行评估
+对于模型的预测效果，本文通过多种可视化方法展示了预测效果。首先，绘制了预测收盘价与实际收盘价的时间序列对比图，直观展示模型在不同市场阶段的预测准确性；接着计算预测的涨跌幅并做出可视化。最后，采用方向预测准确率（Direction Prediction Accuracy）及涨跌幅预测MAE对预测效果进行评估。\\
+
+关键词：LSTM模型, 商品期货市场, 时间序列预测, 特征提取, 深度学习框架
+
 
 \section{问题重述}
 \subsection{问题背景}
@@ -704,7 +707,7 @@ LSTM模型的数学-金融学背景如下:
 
 选择HC,JM,RB三种期货进行可视化如下图
 
-HC和JM在训练轮次到达4轮左右时, 误差接近收敛;
+HC和JM在训练轮次到达4轮左右时, 误差接近收敛
 
 RB的验证集平均绝对误差呈波动下降, 没有出现过拟合和欠拟合的情况, 效果最优
 \FloatBarrier
@@ -732,8 +735,14 @@ RB的验证集平均绝对误差呈波动下降, 没有出现过拟合和欠拟�
 
 
 \subsection{模型预测效果与改进建议}
-% \subsubsection{模型训练及验证结果}
+\subsubsection{模型训练及验证结果}
 先根据模型计算出预测的收盘价close和实际收盘价做对比, 可视化展示发现误差在可控范围内
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./pic/RB_compare.png}
+  \caption*{RB收盘价预测与模型的对比}
+  % \label{fig:drone_formation}
+\end{figure}
 
 计算得到最终所需的涨跌幅数据, 展示其中3种期货的可视化图片
 \FloatBarrier
@@ -756,12 +765,83 @@ RB的验证集平均绝对误差呈波动下降, 没有出现过拟合和欠拟�
   \caption*{SS涨跌幅预测}
   % \label{fig:drone_formation}
 \end{figure}
-\begin{figure}[H]
+
+
+
+预测的各期货涨跌幅评估指标：
+\begin{table}[H]
   \centering
-  \includegraphics[width=\textwidth]{./pic/RB_compare.png}
-  \caption*{RB收盘价预测与模型的对比}
-  % \label{fig:drone_formation}
-\end{figure}
+  \caption{各期货品种预测性能对比}
+  \begin{tabular}{|c|c|c|} 
+    \hline
+    \textbf{期货品种} & \textbf{方向预测准确率(\%)} & \textbf{涨跌幅MAE(\%)} \\
+    \hline
+    HC & 65.45 & 0.37 \\
+    \hline
+    SS & 64.72 & 0.35 \\
+    \hline
+    SF & 66.31 & 0.32 \\
+    \hline
+    SM & 61.26 & 0.29 \\
+    \hline
+    RB & 68.18 & 0.33 \\
+    \hline
+    I & 67.54 & 0.33 \\
+    \hline
+    JM & 64.88 & 0.34 \\
+    \hline
+  \end{tabular}
+  \label{tab:prediction_performance}
+\end{table}
+
+\subsubsection{模型改进建议}
+未来研究可从以下几个方向进行改进：\\
+(1)引入市场情绪和宏观经济指标等外部特征，提升模型对市场转折点的敏感度；\\
+(2)探索注意力机制和更先进的神经网络架构如Transformer，增强模型对长期依赖的捕捉能力；\\
+(3)结合强化学习技术，直接优化交易决策而非单纯预测涨跌幅；\\
+(4)开发更具解释性的模型结构，帮助投资者理解预测背后的市场逻辑。\\
+
+\newpage
+\section{参考文献}
+\renewcommand\refname{} % 禁用 bibliography 默认标题（article 类）
+\begin{thebibliography}{9}
+
+\bibitem{he2004}
+何光辉. 处理金融时间序列的非平稳性和时变性——2003年诺贝尔经济学奖得主的理论贡献[J]. 国际金融研究, 2004(5): 74–78.
+
+\bibitem{zhao2021}
+赵婷婷, 韩雅杰, 杨梦楠, 任德华, 陈亚瑞, 刘建征. 基于机器学习的时序数据预测方法研究综述[J]. 天津科技大学学报, 2021, 36(5): 1–9.
+
+\bibitem{wang2007}
+王永民, 何幼桦, 忻莉莉, 王巧兰. 时变自回归模型系数的估计及预测[J]. 应用数学与计算数学学报, 2007, 21(2): 35–41.
+
+\bibitem{onlstm}
+Shen Y, Tan S, Sordoni A, Courville A. Ordered Neurons: Integrating Tree Structures into Recurrent Neural Networks[EB/OL]. arXiv preprint arXiv:1810.09536v6, 2018. Available: \url{http://arxiv.org/pdf/1810.09536v6}.
+
+\bibitem{lrcn}
+Donahue J, Hendricks L A, Rohrbach M, Venugopalan S, Guadarrama S, Saenko K, Darrell T. Long-Term Recurrent Convolutional Networks for Visual Recognition and Description[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2017, 39(4): 677–691. DOI: \href{https://doi.org/10.1109/TPAMI.2016.2599174}{10.1109/TPAMI.2016.2599174}.
+
+\bibitem{latticelstm}
+Zhang Y, Yang J. Chinese NER Using Lattice LSTM[C]// Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2018: 1554–1564. 
+
+\bibitem{convlstm}
+Shi X, Chen Z, Wang H, Yeung D Y, Wong W K, Woo W C. Convolutional LSTM Network: A Machine Learning Approach for Precipitation Nowcasting[C]// Advances in Neural Information Processing Systems (NeurIPS), 2015, 28: 802–810.
+
+\end{thebibliography}
+
+\iffalse
 \section{源码与文档}
+预处理部分：
+preprocess.py 对原始数据进行预处理 \\
+OutlierClean.py volume异常值处理 \\
+特征提取部分：
+feature_extract_volume.py 提取交易量变化率 \\
+lag_feature.py 提取交易量滞后特征 \\
+cross_feature.py 提取交叉特征 \\
+模型训练与验证部分：
+train.py \\
+模型预测与评估部分：
+predict.py \\
+\fi
 
 \end{document}
