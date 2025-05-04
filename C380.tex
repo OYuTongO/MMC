@@ -700,6 +700,13 @@ LSTM模型的数学-金融学背景如下:
   \end{itemize}
 \end{itemize}
 \subsubsection{模型训练及验证结果}
+使用回归问题中常见的MSE均方误差和MAE平均绝对误差作为评价标准
+
+选择HC,JM,RB三种期货进行可视化如下图
+
+HC和JM在训练轮次到达4轮左右时, 误差接近收敛;
+
+RB的验证集平均绝对误差呈波动下降, 没有出现过拟合和欠拟合的情况, 效果最优
 \FloatBarrier
 \noindent
 \begin{figure}[H]
@@ -725,7 +732,10 @@ LSTM模型的数学-金融学背景如下:
 
 
 \subsection{模型预测效果与改进建议}
-\subsubsection{模型训练及验证结果}
+% \subsubsection{模型训练及验证结果}
+先根据模型计算出预测的收盘价close和实际收盘价做对比, 可视化展示发现误差在可控范围内
+
+计算得到最终所需的涨跌幅数据, 展示其中3种期货的可视化图片
 \FloatBarrier
 \noindent
 \begin{figure}[H]
