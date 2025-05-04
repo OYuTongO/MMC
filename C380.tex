@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{ctexart}
+\documentclass[a4paper,11pt]{ctexart}
 \usepackage{algorithm,algpseudocode}
 \usepackage{array} % 用于表格列格式调整
 \usepackage[utf8]{inputenc}
@@ -13,7 +13,7 @@
 \usepackage{float}
 \usepackage{hyperref}  % 超链接
 \usepackage{enumitem}  % 自定义列表
-\usepackage[left=3.5cm,right=3cm,top=2cm,bottom=2cm]{geometry}  % 页面设置
+\usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}  % 页面设置
 \newtheorem{theorem}{定理}[section]
 
 \title{ 商品期货涨跌幅预测问题}
@@ -102,76 +102,86 @@
 
 
 
-\section{数据预处理}
+\subsection{数据预处理}
 预处理preprocess的核心:将数据从以时间为分类标准变为以期货类型为分类标准
-1.去掉和文件名时间不相同的所有数据,保证仅包含当天的数据
-2.去掉exchange,contract,symbol,open,high,low,openinterset这些与涨跌幅不相关的数据
-3.检查close是否是float64类型,volume是否是int64类型,如果是字符串类型则需要进行修改
-4.四分位数法检查close和volume数据中的异常值,出现异常采用线性插值法进行平滑处理
-
-最终得到仅包含datetime-close-volume的7个数据文件
 \begin{enumerate}
-  \item 给出异常值处理前的volume和close的重叠k线图:此处篇幅原因暂时仅给出3张
+\item 去掉和文件名时间不相同的所有数据,保证仅包含当天的数据
+\item 去掉exchange,contract,symbol,open,high,low,openinterset这些与涨跌幅不相关的数据
+\item 检查close是否是float64类型,volume是否是int64类型,如果是字符串类型则需要进行修改
+\item 四分位数法检查close和volume数据中的异常值,出现异常采用线性插值法进行平滑处理
+\end{enumerate}
+\subsubsection{最终得到仅包含datetime-close-volume的7个数据文件:此处篇幅原因暂时仅给出3张。}
+\begin{enumerate}
+  \item 给出异常值处理前的volume和close的重叠折线图
 \FloatBarrier
 \noindent
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v0/HC.png}
-    \caption*{图2.2.1 异常值处理前HC的volume和close的重叠k线图}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v0/I.png}
-    \caption*{图2.2.2 异常值处理前I的volume和close的重叠k线图}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v0/JM.png}
-    \caption*{图2.2.2 异常值处理前JM的volume和close的重叠k线图}
-  \end{subfigure}
-  % 可以根据需要继续添加更多的子figure
-  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
+  \includegraphics[width=\textwidth]{./v2/v0/HC.png}
+  \caption*{异常值处理前HC的volume和close的重叠折线图}
+  % \label{fig:drone_formation}
 \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./v2/v0/I.png}
+  \caption*{异常值处理前I的volume和close的重叠折线图}
+  % \label{fig:drone_formation}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./v2/v0/JM.png}
+  \caption*{异常值处理前JM的volume和close的重叠折线图}
+  % \label{fig:drone_formation}
+\end{figure}
+
 \newpage
-\item 给出异常值处理后的close随时间变化的数值k线图:\FloatBarrier\noindent\begin{figure}[H]
+\item 给出异常值处理后的close随时间变化的数值折线图:\FloatBarrier\noindent
+\begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{0.4\textwidth}
+
     \includegraphics[width=\textwidth]{./v2/v2/HC.png}
-    \caption*{图2.2.1 异常值处理后HC的close的k线图}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v2/I.png}
-    \caption*{图2.2.2 异常值处理后I的close的k线图}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v2/JM.png}
-    \caption*{图2.2.2 异常值处理后JM的close的k线图}
-  \end{subfigure}
-  % 可以根据需要继续添加更多的子figure
-  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
+    \caption*{异常值处理后HC的close的折线图}
 \end{figure}
-\item 给出异常值处理后的volume对比图:\FloatBarrier\noindent\begin{figure}[H]
+
+
+\begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v3/HC.png}
-    \caption*{图2.2.1 异常值处理后HC的v2异常后close的k线图}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v3/I.png}
-    \caption*{图2.2.2 异常值处理后I的v2异常后close的k线图}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.4\textwidth}
-    \includegraphics[width=\textwidth]{./v2/v3/JM.png}
-    \caption*{图2.2.2 异常值处理后JM的v2异常后close的k线图}
-  \end{subfigure}
+
+    \includegraphics[width=\textwidth]{./v2/v2/I.png}
+    \caption*{异常值处理后I的close的折线图}
+\end{figure}
+
+  \begin{figure}[H]
+  \centering
+
+    \includegraphics[width=\textwidth]{./v2/v2/JM.png}
+    \caption*{异常值处理后JM的close的折线图}
+  \end{figure}
   % 可以根据需要继续添加更多的子figure
   % \caption{整体图标题} % 如果需要为整个figure添加一个标题
-\end{figure}
+
+\item 给出异常值处理后的volume对比图:\FloatBarrier\noindent
+\begin{figure}[H]
+  \centering
+
+    \includegraphics[width=\textwidth]{./v2/v3/HC.png}
+    \caption*{异常值处理后HC的volume对比图}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./v2/v3/I.png}
+    \caption*{异常值处理后I的volume对比图}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./v2/v3/JM.png}
+    \caption*{异常值处理后JM的volume对比图}
+  \end{figure}
+  % 可以根据需要继续添加更多的子figure
+  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
+
 \end{enumerate}
 \newpage
 \subsection{特征提取}
@@ -193,9 +203,31 @@
 
 交易量的变化率定义如下：
 \[
-\text{Volume Change Rate}_t = \frac{V_t - V_{t-1}}{V_{t-1}}
+\text{Volume Change Rate}_t = \frac{V_t - V_{t-1}}{V_{t-1}}*100\%
 \]
 其中 $V_t$ 表示当前时间点的交易量，$V_{t-1}$ 为上一个时间点的交易量。
+\FloatBarrier
+\noindent
+\begin{figure}[H]
+  \centering
+
+    \includegraphics[width=\textwidth]{./v3/交易量变化率/HC.png}
+    \caption*{HC的交易量变化率}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./v3/交易量变化率/I.png}
+    \caption*{I的交易量变化率}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./v3/交易量变化率/JM.png}
+    \caption*{JM的交易量变化率}
+  \end{figure}
+  % 可以根据需要继续添加更多的子figure
+  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
 
 
 
@@ -239,6 +271,29 @@
 \[
 \text{Volume-Volatility Interaction}_t = \text{Volatility}_t \times V_t
 \]
+\FloatBarrier
+\noindent
+  \begin{figure}[H]
+  \centering
+
+    \includegraphics[width=\textwidth]{./v3/交叉特征/HC.png}
+    \caption*{HC的交叉特征}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./v3/交叉特征/I.png}
+    \caption*{I的交叉特征}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./v3/交叉特征/JM.png}
+    \caption*{JM的交叉特征}
+ 
+  % 可以根据需要继续添加更多的子figure
+  % \caption{整体图标题} % 如果需要为整个figure添加一个标题
+  \end{figure}
+
+
 
 \newpage
 \subsection{模型选择理由}
